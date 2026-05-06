@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 01 — ¿Por qué es difícil el primer empleo en CR?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F5F0;
+    --surface: #EFECE5;
+    --ink: #0F1923;
+    --ink-mid: #4A5568;
+    --ink-soft: #8896A4;
+    --accent: #C8432A;
+    --accent-bg: #F5EBE8;
+    --border: rgba(15,25,35,0.12);
+    --font-serif: 'DM Serif Display', Georgia, serif;
+    --font-mono: 'DM Mono', 'Courier New', monospace;
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --content-width: 720px;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 clamp(1.5rem, 5vw, 4rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .logo span { color: var(--accent); }
+
+  .back-link {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  /* ── Article layout ── */
+  .article-wrap {
+    max-width: calc(var(--content-width) + 8rem);
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 5vw, 4rem);
+  }
+
+  /* ── Hero ── */
+  .article-hero {
+    padding: clamp(3rem, 8vw, 6rem) 0 3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+
+  .breadcrumb {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .article-hero h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    max-width: var(--content-width);
+    margin-bottom: 1.5rem;
+  }
+
+  .article-hero .lede {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    font-weight: 300;
+    color: var(--ink-mid);
+    max-width: var(--content-width);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .article-meta span {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+  }
+
+  .meta-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Content ── */
+  .article-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: var(--content-width);
+    margin: 0 auto;
+    gap: 0;
+  }
+
+  /* ── Sections ── */
+  .lab-section {
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lab-section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.3;
+    max-width: 60px;
+  }
+
+  .lab-section h2 {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+  }
+
+  .lab-section h3 {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin: 1.75rem 0 0.75rem;
+    color: var(--ink);
+  }
+
+  .lab-section p {
+    font-size: 0.95rem;
+    color: var(--ink-mid);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+  }
+
+  .lab-section p strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ── Callout / Answer box ── */
+  .answer-box {
+    background: var(--ink);
+    color: #F7F5F0;
+    padding: 1.5rem 1.75rem;
+    border-radius: 4px;
+    margin: 1.5rem 0;
+  }
+
+  .answer-box .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(247,245,240,0.5);
+    margin-bottom: 0.5rem;
+  }
+
+  .answer-box p {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: #F7F5F0;
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ── Hypothesis box ── */
+  .hypothesis-box {
+    border-left: 3px solid var(--accent);
+    padding: 1.25rem 1.5rem;
+    background: var(--accent-bg);
+    margin: 1.5rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .hypothesis-box .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .hypothesis-box p {
+    font-size: 0.95rem;
+    color: var(--ink);
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ── Data elements list ── */
+  .data-list {
+    list-style: none;
+    display: grid;
+    gap: 8px;
+    margin: 1.25rem 0;
+  }
+
+  .data-list li {
+    font-size: 0.9rem;
+    color: var(--ink-mid);
+    padding: 10px 14px;
+    background: var(--surface);
+    border-radius: 3px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+
+  .data-list li::before {
+    content: '→';
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── Sources table ── */
+  .sources-grid {
+    display: grid;
+    gap: 10px;
+    margin: 1.25rem 0;
+  }
+
+  .source-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+
+  .source-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .source-desc {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    font-weight: 300;
+    margin-top: 2px;
+  }
+
+  .source-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .source-link:hover { text-decoration: underline; }
+
+  /* ── Stat pullquotes ── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin: 2rem 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .stat-cell {
+    background: var(--surface);
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .stat-cell .num {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    color: var(--accent);
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-cell .desc {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* ── Chart containers ── */
+  .chart-wrap {
+    margin: 2rem 0;
+    background: var(--surface);
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+
+  .chart-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 1rem;
+  }
+
+  .chart-canvas-wrap {
+    position: relative;
+  }
+
+  /* ── Analysis type badge ── */
+  .analysis-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: #F7F5F0;
+    padding: 8px 14px;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin: 1rem 0;
+  }
+
+  .analysis-badge .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #22C55E;
+    flex-shrink: 0;
+  }
+
+  /* ── Reflection ── */
+  .reflection-q {
+    background: var(--surface);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .reflection-q .q-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .reflection-q .question {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+    font-style: italic;
+  }
+
+  .reflection-q .answer {
+    font-size: 0.875rem;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* ── Footer ── */
+  .article-footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem clamp(1.5rem, 5vw, 4rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .article-footer p {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+
+  .article-footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .article-hero { animation: fadeUp 0.5s ease both; }
+  .article-content { animation: fadeUp 0.5s 0.1s ease both; }
+
+  @media (max-width: 600px) {
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .source-item { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="logo">datos<span>_</span>portafolio</a>
+  <a href="../index.html" class="back-link">← Volver</a>
+</header>
+
+<div class="article-wrap">
+
+  <div class="article-hero">
+    <div class="breadcrumb">
+      <span>Portafolio</span>
+      <span>/</span>
+      <span>Lab 1.2.3</span>
+    </div>
+    <h1>¿Por qué es tan difícil conseguir el primer empleo en Costa Rica?</h1>
+    <p class="lede">Exploración de los factores estructurales que obstaculizan la inserción laboral juvenil en Costa Rica y Latinoamérica. Primer proyecto del portafolio analítico — paso "Hacer la pregunta correcta".</p>
+    <div class="article-meta">
+      <span class="meta-tag">Lab 1.2.3</span>
+      <span>Mayo 2026</span>
+      <span>Análisis descriptivo</span>
+      <span>Fuentes: INEC · OCDE · OIT · IICE-UCR</span>
+    </div>
+  </div>
+
+  <article class="article-content">
+
+    <!-- PARTE 1: LA PREGUNTA -->
+    <div class="lab-section">
+      <div class="section-label">Paso 1.a</div>
+      <h2>La pregunta</h2>
+
+      <div class="answer-box">
+        <div class="label">Pregunta de investigación</div>
+        <p>¿Cuáles son los principales factores estructurales que dificultan la inserción laboral de los jóvenes en Costa Rica, y cómo se compara esta situación con el resto de Latinoamérica?</p>
+      </div>
+
+      <h3>¿Cuál es el beneficio de responder esta pregunta?</h3>
+      <p>Esta pregunta tiene un beneficio dual y muy concreto. A nivel <strong>individual</strong>, entender los factores reales que bloquean el primer empleo permite a los jóvenes diseñar estrategias más efectivas de búsqueda y no desperdiciar tiempo en causas que no dependen de ellos. A nivel <strong>político y social</strong>, identificar si el problema es estructural — y no solo de preparación individual — puede orientar programas de empleo juvenil hacia intervenciones que sí funcionan.</p>
+      <p>El contexto es urgente: datos del INEC y la OCDE al cierre de 2025 muestran que Costa Rica tiene la segunda tasa de desempleo juvenil más alta de toda la OCDE, con un 25.3% de jóvenes de 15 a 24 años sin empleo pese a buscarlo activamente.</p>
+
+      <div class="stat-row">
+        <div class="stat-cell">
+          <span class="num">25.3%</span>
+          <span class="desc">Desempleo juvenil CR (2025)</span>
+        </div>
+        <div class="stat-cell">
+          <span class="num">10.8%</span>
+          <span class="desc">Promedio OCDE</span>
+        </div>
+        <div class="stat-cell">
+          <span class="num">6 de 10</span>
+          <span class="desc">Desempleados menores de 35 años</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPO DE ANÁLISIS -->
+    <div class="lab-section">
+      <div class="section-label">Paso 1.b</div>
+      <h2>Tipo de análisis seleccionado</h2>
+
+      <div class="analysis-badge">
+        <span class="dot"></span>
+        Análisis descriptivo
+      </div>
+
+      <p>De los cuatro tipos de análisis de datos, el <strong>análisis descriptivo</strong> es el que mejor se adapta a esta pregunta. El objetivo es entender <em>qué está pasando</em> y <em>cómo ha evolucionado</em> la situación del empleo juvenil usando datos históricos de INEC, OCDE y OIT desde 2015 hasta 2025.</p>
+      <p>No buscaremos predecir el futuro (predictivo) ni prescribir acciones específicas (prescriptivo), sino describir el panorama con precisión para luego identificar patrones. En etapas posteriores del curso podría evolucionar a un análisis diagnóstico para responder <em>¿por qué ocurre esto?</em> con mayor profundidad estadística.</p>
+
+      <div class="hypothesis-box">
+        <div class="label">Hipótesis inicial</div>
+        <p>La dificultad de inserción laboral juvenil en Costa Rica no se explica principalmente por factores individuales (educación o habilidades), sino por factores estructurales: el círculo vicioso de la experiencia, la desconexión entre el sistema educativo y el mercado, y la reducción sostenida de la participación laboral post-pandemia.</p>
+      </div>
+    </div>
+
+    <!-- DATOS NECESARIOS -->
+    <div class="lab-section">
+      <div class="section-label">Paso 2.a</div>
+      <h2>Elementos de datos necesarios</h2>
+      <p>Para responder la pregunta, se necesitan los siguientes elementos de datos:</p>
+
+      <ul class="data-list">
+        <li>Tasa de desempleo juvenil (15–24 años) en Costa Rica por trimestre, 2015–2025 (INEC)</li>
+        <li>Tasa de desempleo general (toda la fuerza laboral) en el mismo período, para comparación</li>
+        <li>Tasa de desempleo juvenil por país de la OCDE y Latinoamérica (2025)</li>
+        <li>Distribución de actividad de jóvenes: estudia, trabaja, nini, ambas (INEC)</li>
+        <li>Porcentaje de empleo informal en Costa Rica, desglosado por edad</li>
+        <li>Tasa de participación laboral juvenil, evolución 2015–2025</li>
+        <li>Factores identificados por jóvenes como obstáculos para conseguir empleo (encuesta ManpowerGroup / Junior Achievement, 14 países, 2024)</li>
+        <li>Factores identificados por empleadores como barreras al contratar jóvenes (misma encuesta)</li>
+        <li>Tasa de desempleo juvenil por género en Costa Rica</li>
+        <li>Comparación de requisitos de experiencia en vacantes de nivel inicial (datos de portales de empleo como Computrabajo, LinkedIn, Brete.cr)</li>
+      </ul>
+    </div>
+
+    <!-- FUENTES -->
+    <div class="lab-section">
+      <div class="section-label">Paso 2.b / 2.c</div>
+      <h2>Fuentes de datos identificadas</h2>
+
+      <div class="sources-grid">
+        <div class="source-item">
+          <div>
+            <div class="source-name">INEC Costa Rica — Encuesta Continua de Empleo (ECE)</div>
+            <div class="source-desc">Datos trimestrales de empleo, desempleo, informalidad y participación laboral en Costa Rica</div>
+          </div>
+          <a href="https://inec.cr/estadisticas/encuesta-continua-de-empleo" target="_blank" class="source-link">inec.cr ↗</a>
+        </div>
+
+        <div class="source-item">
+          <div>
+            <div class="source-name">IICE-UCR — Análisis del Mercado Laboral Costarricense</div>
+            <div class="source-desc">Informes trimestrales con análisis independiente de la UCR sobre el mercado laboral</div>
+          </div>
+          <a href="https://www.iice.ucr.ac.cr" target="_blank" class="source-link">iice.ucr.ac.cr ↗</a>
+        </div>
+
+        <div class="source-item">
+          <div>
+            <div class="source-name">OCDE — Employment Outlook &amp; Labour Force Statistics</div>
+            <div class="source-desc">Comparativas internacionales de empleo juvenil, participación laboral y brechas de género</div>
+          </div>
+          <a href="https://data.oecd.org/emp/youth-unemployment-rate.htm" target="_blank" class="source-link">data.oecd.org ↗</a>
+        </div>
+
+        <div class="source-item">
+          <div>
+            <div class="source-name">OIT — Panorama Laboral de América Latina y el Caribe</div>
+            <div class="source-desc">Informe anual de la Organización Internacional del Trabajo sobre empleo regional</div>
+          </div>
+          <a href="https://www.ilo.org/americas/publicaciones/panorama-laboral" target="_blank" class="source-link">ilo.org ↗</a>
+        </div>
+
+        <div class="source-item">
+          <div>
+            <div class="source-name">ManpowerGroup / Junior Achievement — Escasez de Oportunidades</div>
+            <div class="source-desc">Encuesta bienal con +13,000 jóvenes y +500 empresas de 14 países latinoamericanos</div>
+          </div>
+          <a href="https://www.manpowergroup.com.mx" target="_blank" class="source-link">manpowergroup.com.mx ↗</a>
+        </div>
+
+        <div class="source-item">
+          <div>
+            <div class="source-name">Kaggle — Latin America Employment Datasets</div>
+            <div class="source-desc">Datasets de empleo y trabajo en formato CSV, listos para análisis con Python o Excel</div>
+          </div>
+          <a href="https://www.kaggle.com/search?q=latin+america+employment" target="_blank" class="source-link">kaggle.com ↗</a>
+        </div>
+
+        <div class="source-item">
+          <div>
+            <div class="source-name">MTSS Costa Rica — Portal Brete.cr</div>
+            <div class="source-desc">Ministerio de Trabajo: vacantes activas, estadísticas de demanda laboral por sector</div>
+          </div>
+          <a href="https://brete.cr" target="_blank" class="source-link">brete.cr ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISUALIZACIÓN PRELIMINAR -->
+    <div class="lab-section">
+      <div class="section-label">Exploración inicial</div>
+      <h2>Primeras visualizaciones de los datos</h2>
+      <p>Con los datos públicos ya disponibles, estas visualizaciones representan un primer acercamiento descriptivo al problema.</p>
+
+      <div class="chart-wrap">
+        <div class="chart-title">Desempleo juvenil (15–24): Costa Rica vs. región (2025)</div>
+        <div class="chart-canvas-wrap" style="height: 220px;">
+          <canvas id="c1" role="img" aria-label="Comparación desempleo juvenil CR 25.3%, Latinoamérica 13.8%, OCDE 10.8%">CR: 25.3%, Latinoamérica: 13.8%, OCDE: 10.8%</canvas>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-title">Principales obstáculos para el primer empleo — Latinoamérica</div>
+        <div class="chart-canvas-wrap" style="height: 240px;">
+          <canvas id="c2" role="img" aria-label="Falta de experiencia 63%, horarios 41%, edad 36%, dependientes 24%, género 22%">Obstáculos reportados por jóvenes latinoamericanos en encuesta ManpowerGroup 2024</canvas>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-title">Situación de jóvenes 15–24 en Costa Rica (IV trim. 2025)</div>
+        <div class="chart-canvas-wrap" style="height: 200px;">
+          <canvas id="c3" role="img" aria-label="Solo estudia 51%, solo trabaja 22%, estudia y trabaja 7%, nini 20%">Distribución de actividad de jóvenes costarricenses según INEC</canvas>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;">
+          <span style="font-size:11px;display:flex;align-items:center;gap:5px;color:var(--ink-mid);font-family:var(--font-mono);"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD;display:inline-block;"></span>Solo estudia 51%</span>
+          <span style="font-size:11px;display:flex;align-items:center;gap:5px;color:var(--ink-mid);font-family:var(--font-mono);"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block;"></span>Solo trabaja 22%</span>
+          <span style="font-size:11px;display:flex;align-items:center;gap:5px;color:var(--ink-mid);font-family:var(--font-mono);"><span style="width:10px;height:10px;border-radius:2px;background:#639922;display:inline-block;"></span>Estudia y trabaja 7%</span>
+          <span style="font-size:11px;display:flex;align-items:center;gap:5px;color:var(--ink-mid);font-family:var(--font-mono);"><span style="width:10px;height:10px;border-radius:2px;background:#C8432A;display:inline-block;"></span>Nini 20%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREGUNTAS DE REFLEXIÓN -->
+    <div class="lab-section">
+      <div class="section-label">Reflexión</div>
+      <h2>Preguntas de reflexión</h2>
+
+      <div class="reflection-q">
+        <div class="q-num">Pregunta 1</div>
+        <p class="question">¿Por qué es importante identificar la pregunta que debe responderse con el análisis antes de comenzar el proyecto?</p>
+        <p class="answer">La pregunta define el alcance y el propósito de todo el proyecto. Sin una pregunta clara, el análisis se convierte en una exploración sin dirección que puede producir hallazgos irrelevantes o, peor, llegar a conclusiones sin sustento. En este caso concreto, la pregunta sobre <em>factores estructurales</em> vs. <em>individuales</em> orientó la búsqueda hacia datos comparativos internacionales y encuestas a empleadores — no solo estadísticas de desempleo. Si la pregunta hubiera sido "¿cuánto desempleo hay?", el análisis habría sido mucho más superficial. La pregunta también determina el tipo de análisis requerido (descriptivo, en este caso) y las fuentes de datos apropiadas.</p>
+      </div>
+
+      <div class="reflection-q">
+        <div class="q-num">Pregunta 2</div>
+        <p class="question">Nombre algunas fuentes de datos abiertos para el análisis que encontró al buscar sus elementos de datos.</p>
+        <p class="answer">Durante la búsqueda se identificaron las siguientes fuentes de datos abiertos relevantes para este proyecto: <strong>INEC Costa Rica</strong> (inec.cr) con la Encuesta Continua de Empleo en formato abierto; <strong>OCDE Data</strong> (data.oecd.org) con estadísticas de desempleo juvenil por país; <strong>OIT ILOSTAT</strong> (ilostat.ilo.org) con datos laborales para más de 100 países; <strong>Kaggle</strong> con datasets de empleo latinoamericano en CSV; y <strong>Banco Mundial Open Data</strong> (data.worldbank.org) con indicadores de mercado laboral. Una fuente especialmente útil para análisis más profundos es el portal <strong>CEPALSTAT</strong> de la CEPAL, que agrega datos socioeconómicos de América Latina y el Caribe.</p>
+      </div>
+    </div>
+
+    <!-- PRÓXIMOS PASOS -->
+    <div class="lab-section">
+      <div class="section-label">Próximos pasos</div>
+      <h2>¿Qué sigue en este proyecto?</h2>
+      <p>Este laboratorio corresponde al primer paso del proceso analítico. Los siguientes pasos del portafolio, a medida que avance el curso, serán:</p>
+      <ul class="data-list">
+        <li><strong>Recolección y preparación de datos:</strong> Descargar los datasets del INEC y la OCDE, limpiarlos y estructurarlos para el análisis</li>
+        <li><strong>Exploración de datos (EDA):</strong> Análisis estadístico descriptivo, detección de patrones y valores atípicos</li>
+        <li><strong>Visualizaciones avanzadas:</strong> Gráficos de tendencia temporal, comparativas regionales interactivas</li>
+        <li><strong>Conclusiones:</strong> Comparar la hipótesis inicial con los hallazgos reales del análisis</li>
+      </ul>
+    </div>
+
+  </article>
+</div>
+
+<footer class="article-footer">
+  <p>Proyecto 01 · Portafolio de Análisis de Datos · Mayo 2026</p>
+  <p>Datos: <a href="https://inec.cr" target="_blank">INEC</a> · <a href="https://data.oecd.org" target="_blank">OCDE</a> · <a href="https://ilostat.ilo.org" target="_blank">OIT</a></p>
+</footer>
+
+<script>
+const mono = '#4A5568';
+const gridC = 'rgba(15,25,35,0.07)';
+
+new Chart(document.getElementById('c1'), {
+  type: 'bar',
+  data: {
+    labels: ['Costa Rica', 'Latinoamérica', 'Promedio OCDE'],
+    datasets: [{
+      data: [25.3, 13.8, 10.8],
+      backgroundColor: ['#C8432A', '#EF9F27', '#378ADD'],
+      borderWidth: 0,
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y.toFixed(1) + '%' } } },
+    scales: {
+      x: { ticks: { color: mono, font: { size: 12, family: "'DM Mono'" } }, grid: { display: false } },
+      y: { ticks: { color: mono, font: { size: 11 }, callback: v => v + '%' }, grid: { color: gridC }, max: 30 }
+    }
+  }
+});
+
+new Chart(document.getElementById('c2'), {
+  type: 'bar',
+  data: {
+    labels: ['Falta de\nexperiencia', 'Horarios\nincompatibles', 'Edad como\nrequisito', 'Dependientes\necon.', 'Género'],
+    datasets: [{
+      data: [63, 41, 36, 24, 22],
+      backgroundColor: ['#0F1923', '#2D4A6B', '#378ADD', '#85B7EB', '#B5D4F4'],
+      borderWidth: 0,
+      borderRadius: 4
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.x + '%' } } },
+    scales: {
+      x: { ticks: { color: mono, font: { size: 11 }, callback: v => v + '%' }, grid: { color: gridC }, max: 75 },
+      y: { ticks: { color: mono, font: { size: 11, family: "'DM Sans'" } }, grid: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById('c3'), {
+  type: 'bar',
+  data: {
+    labels: ['Solo estudia', 'Solo trabaja', 'Estudia y trabaja', 'Nini (ni estudia\nni trabaja)'],
+    datasets: [{
+      data: [51, 22, 7, 20],
+      backgroundColor: ['#378ADD', '#1D9E75', '#639922', '#C8432A'],
+      borderWidth: 0,
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y + '%' } } },
+    scales: {
+      x: { ticks: { color: mono, font: { size: 11 }, autoSkip: false }, grid: { display: false } },
+      y: { ticks: { color: mono, font: { size: 11 }, callback: v => v + '%' }, grid: { color: gridC }, max: 60 }
+    }
+  }
+});
+</script>
+</body>
+</html>
