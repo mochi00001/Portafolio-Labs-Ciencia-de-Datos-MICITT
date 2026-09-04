@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unión de tablas — Laboratorio | Data Analytics Essentials</title>
+<meta name="description" content="Writeup del laboratorio «Unión de tablas»: NATURAL JOIN vs JOIN … ON, CROSS JOIN accidental y filtros WHERE.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/portfolio.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="../../index.html" class="logo">datos<span>_</span>portafolio</a>
+    <a href="../index.html" class="back-link">← Data Analytics Essentials</a>
+  </div>
+</header>
+
+<main>
+  <section class="article-hero fade-up">
+    <div class="wrap">
+      <div class="breadcrumb">
+        <a href="../../index.html">Portafolio</a><span>/</span><a href="../index.html">Data Analytics Essentials</a><span>/</span><span>Laboratorio</span>
+      </div>
+      <h1>Unión de tablas</h1>
+      <p class="lede">Combinar datos que viven en tablas separadas. El laboratorio contrasta <code class="inline">NATURAL JOIN</code> (une por columnas con el mismo nombre) con <code class="inline">JOIN … ON</code> (une por condición explícita), y muestra qué pasa cuando la unión sale mal.</p>
+      <div class="article-meta">
+        <span class="chip chip-accent">Módulo 7</span>
+        <span class="mono-meta">Consultas estructuradas</span>
+        <span class="mono-meta">Julio 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap-narrow fade-up-2">
+
+    <div class="lab-section">
+      <div class="section-label">Qué practiqué</div>
+      <h2>Los datos casi nunca están en una sola tabla</h2>
+      <p>Las coordenadas de un país están en <code class="inline">geoloc</code>, su línea de costa
+      en <code class="inline">coastlines</code>, su nombre en <code class="inline">countries</code>.
+      Un <code class="inline">JOIN</code> las alinea por una columna común (la clave).</p>
+      <ul class="arrow-list">
+        <li><code class="inline">NATURAL JOIN</code>: implícito, une solo si las columnas clave se llaman igual (aquí <code class="inline">ccd</code>). Elimina la columna duplicada.</li>
+        <li><code class="inline">JOIN … ON a = b</code>: explícito, funciona con nombres distintos y admite operadores (<code class="inline">&lt;</code>, <code class="inline">&gt;</code>, <code class="inline">!=</code>).</li>
+        <li>Si la clave no coincide por nombre, <code class="inline">NATURAL JOIN</code> degenera en <code class="inline">CROSS JOIN</code>: cada fila con cada fila (explosión de filas).</li>
+      </ul>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Consultas</div>
+      <h2>Recorrido del laboratorio</h2>
+
+      <h3>NATURAL JOIN + filtros geográficos</h3>
+      <pre class="code"><span class="kw">SELECT</span> * <span class="kw">FROM</span> countries <span class="kw">NATURAL JOIN</span> geoloc;
+
+<span class="cm">-- hemisferio sur</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> countries <span class="kw">NATURAL JOIN</span> geoloc <span class="kw">WHERE</span> latitude &lt; <span class="fn">0</span>;
+
+<span class="cm">-- al este del meridiano de Greenwich</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> countries <span class="kw">NATURAL JOIN</span> geoloc <span class="kw">WHERE</span> longitude &gt; <span class="fn">0</span>;
+
+<span class="cm">-- países con costa</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> countries <span class="kw">NATURAL JOIN</span> coastlines <span class="kw">WHERE</span> coast_km &gt; <span class="fn">0</span>;</pre>
+
+      <h3>Cuando NATURAL JOIN falla</h3>
+      <p>En <code class="inline">shapes</code> la clave es <code class="inline">id</code>; en
+      <code class="inline">perimeters</code> es <code class="inline">shape_id</code>. Nombres
+      distintos → <code class="inline">NATURAL JOIN</code> cruza todo con todo. La solución es ser
+      explícito:</p>
+      <pre class="code"><span class="kw">SELECT</span> * <span class="kw">FROM</span> shapes
+<span class="kw">JOIN</span> perimeters <span class="kw">ON</span> id = shape_id;
+
+<span class="cm">-- formas con perímetro &gt; 400</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> shapes
+<span class="kw">JOIN</span> perimeters <span class="kw">ON</span> id = shape_id
+<span class="kw">WHERE</span> perimeter &gt; <span class="fn">400</span>;</pre>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Reflexión</div>
+      <h2>NATURAL JOIN vs. JOIN … ON</h2>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th></th><th>NATURAL JOIN</th><th>JOIN … ON</th></tr></thead>
+          <tbody>
+            <tr><td>Condición de unión</td><td>Implícita, por nombre de columna</td><td>Explícita, la escribe uno</td></tr>
+            <tr><td>Columnas repetidas</td><td>Las colapsa en una</td><td>Conserva ambas</td></tr>
+            <tr><td>Nombres distintos</td><td>No funciona</td><td>Sin problema</td></tr>
+            <tr><td>Estabilidad</td><td>Frágil: una columna nueva cambia el resultado</td><td>Estable: la consulta no cambia sola</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note-box">
+        <div class="label">Conclusión del laboratorio</div>
+        <p><code class="inline">NATURAL JOIN</code> es cómodo para explorar, pero en código que
+        alguien más va a mantener conviene <code class="inline">JOIN … ON</code>: dice exactamente
+        qué se está uniendo y no se rompe cuando el esquema cambia.</p>
+      </div>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Fuente</div>
+      <h2>Material original</h2>
+      <p>Export del laboratorio tal como lo entregó la plataforma NetAcad:
+        <a style="color: var(--accent);" href="originales/union-de-tablas.html">originales/union-de-tablas.html</a>.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap-narrow">
+    <div class="article-footer">
+      <p>Laboratorio · Módulo 7 · Data Analytics Essentials</p>
+      <p><a href="../index.html">← Volver al curso</a></p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="mono-meta">© 2026 · Luis Steven Madriz Campos</p>
+    <div class="footer-links">
+      <a href="https://github.com/mochi00001" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/luismadriz13" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://medium.com/@luismadriz9" target="_blank" rel="noopener">Medium</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

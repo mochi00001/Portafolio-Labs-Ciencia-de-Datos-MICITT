@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Columnas calculadas — Laboratorio | Data Analytics Essentials</title>
+<meta name="description" content="Writeup del laboratorio «Columnas calculadas»: SUM, COUNT, AVG, AS, DISTINCT y GROUP BY sobre países, premios Nobel y películas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/portfolio.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="../../index.html" class="logo">datos<span>_</span>portafolio</a>
+    <a href="../index.html" class="back-link">← Data Analytics Essentials</a>
+  </div>
+</header>
+
+<main>
+  <section class="article-hero fade-up">
+    <div class="wrap">
+      <div class="breadcrumb">
+        <a href="../../index.html">Portafolio</a><span>/</span><a href="../index.html">Data Analytics Essentials</a><span>/</span><span>Laboratorio</span>
+      </div>
+      <h1>Columnas calculadas</h1>
+      <p class="lede">Funciones de agregación sobre grupos: <code class="inline">SUM()</code>, <code class="inline">COUNT()</code> y <code class="inline">AVG()</code>, más <code class="inline">AS</code> para nombrar el resultado y <code class="inline">DISTINCT</code> para no contar duplicados. Tres datasets: países, premios Nobel y películas.</p>
+      <div class="article-meta">
+        <span class="chip chip-accent">Módulo 7</span>
+        <span class="mono-meta">Consultas estructuradas</span>
+        <span class="mono-meta">Julio 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap-narrow fade-up-2">
+
+    <div class="lab-section">
+      <div class="section-label">Qué practiqué</div>
+      <h2>Preguntas que necesitan un cálculo</h2>
+      <p>«¿Cuánta población tiene cada continente?» no está en ninguna celda: hay que sumarla.
+      Una <strong>columna calculada</strong> es justo eso — un valor que la consulta produce a
+      partir de un grupo de filas.</p>
+      <ul class="arrow-list">
+        <li><code class="inline">SUM(col)</code>, <code class="inline">COUNT(col)</code>, <code class="inline">AVG(col)</code> resumen cada grupo.</li>
+        <li><code class="inline">COUNT(*)</code> cuenta filas; <code class="inline">COUNT(col)</code> cuenta valores no nulos de esa columna.</li>
+        <li><code class="inline">AS nombre</code> pone una etiqueta legible a la columna calculada — y permite ordenar por ella.</li>
+        <li><code class="inline">COUNT(DISTINCT col)</code> ignora los repetidos.</li>
+      </ul>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Consultas</div>
+      <h2>Recorrido del laboratorio</h2>
+
+      <h3>Países: sumar y contar por continente</h3>
+      <pre class="code"><span class="kw">SELECT</span> continent, <span class="fn">SUM</span>(population)
+<span class="kw">FROM</span> countries <span class="kw">GROUP BY</span> continent;
+
+<span class="kw">SELECT</span> continent, <span class="fn">COUNT</span>(country)
+<span class="kw">FROM</span> countries <span class="kw">GROUP BY</span> continent;</pre>
+
+      <h3>Premios Nobel: nombrar y ordenar la columna calculada</h3>
+      <pre class="code"><span class="kw">SELECT</span> year, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> prize_count
+<span class="kw">FROM</span> nobel_prizes
+<span class="kw">GROUP BY</span> year
+<span class="kw">ORDER BY</span> prize_count <span class="kw">DESC</span>;</pre>
+      <p>El año con más premios individuales fue <strong>2001</strong>. Pero al contar
+      <em>categorías</em> en lugar de personas hay que quitar duplicados:</p>
+      <pre class="code"><span class="kw">SELECT</span> year, <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> category) <span class="kw">AS</span> category_count
+<span class="kw">FROM</span> nobel_prizes
+<span class="kw">GROUP BY</span> year
+<span class="kw">ORDER BY</span> category_count <span class="kw">DESC</span>;</pre>
+      <p>En años recientes se premian <strong>6</strong> categorías distintas.</p>
+
+      <h3>Películas: promedio de ingresos por clasificación MPAA</h3>
+      <pre class="code"><span class="kw">SELECT</span> mpaa, <span class="fn">AVG</span>(revenue) <span class="kw">AS</span> avg_revenue
+<span class="kw">FROM</span> movies
+<span class="kw">GROUP BY</span> mpaa
+<span class="kw">ORDER BY</span> avg_revenue <span class="kw">DESC</span>;</pre>
+      <p>La clasificación <strong>PG</strong> —apta para todo público con guía— es la que genera
+      mayor ingreso promedio. Coincide con la intuición de taquilla: público más amplio.</p>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Reflexión</div>
+      <h2>Lo que me llevo</h2>
+      <div class="reflection">
+        <div class="q-num">Nota</div>
+        <p class="question">¿Por qué <code class="inline">COUNT(category)</code> y <code class="inline">COUNT(DISTINCT category)</code> dieron números tan distintos?</p>
+        <p class="answer">Porque <code class="inline">COUNT</code> cuenta apariciones, no valores
+        únicos. Un mismo año tiene varias filas con <code class="inline">category = 'Physics'</code>
+        (un premio compartido entre tres personas son tres filas). Sin
+        <code class="inline">DISTINCT</code> estaba midiendo «personas premiadas», no «categorías».
+        Elegir mal entre esos dos es un error de análisis clásico.</p>
+      </div>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Fuente</div>
+      <h2>Material original</h2>
+      <p>Export del laboratorio tal como lo entregó la plataforma NetAcad:
+        <a style="color: var(--accent);" href="originales/columnas-calculadas.html">originales/columnas-calculadas.html</a>.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap-narrow">
+    <div class="article-footer">
+      <p>Laboratorio · Módulo 7 · Data Analytics Essentials</p>
+      <p><a href="../index.html">← Volver al curso</a></p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="mono-meta">© 2026 · Luis Steven Madriz Campos</p>
+    <div class="footer-links">
+      <a href="https://github.com/mochi00001" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/luismadriz13" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://medium.com/@luismadriz9" target="_blank" rel="noopener">Medium</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
