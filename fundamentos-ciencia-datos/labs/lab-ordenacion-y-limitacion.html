@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordenación y limitación — Laboratorio | Data Analytics Essentials</title>
+<meta name="description" content="Writeup del laboratorio «Ordenación y limitación»: ORDER BY, DESC/ASC y LIMIT combinados con WHERE.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/portfolio.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="../../index.html" class="logo">datos<span>_</span>portafolio</a>
+    <a href="../index.html" class="back-link">← Data Analytics Essentials</a>
+  </div>
+</header>
+
+<main>
+  <section class="article-hero fade-up">
+    <div class="wrap">
+      <div class="breadcrumb">
+        <a href="../../index.html">Portafolio</a><span>/</span><a href="../index.html">Data Analytics Essentials</a><span>/</span><span>Laboratorio</span>
+      </div>
+      <h1>Ordenación y limitación</h1>
+      <p class="lede">Cómo controlar <em>qué orden</em> y <em>cuántas filas</em> devuelve una consulta. El laboratorio practica <code class="inline">ORDER BY</code>, el indicador <code class="inline">DESC</code> y <code class="inline">LIMIT</code> sobre lunas del sistema solar, países y hábitos de sueño de animales.</p>
+      <div class="article-meta">
+        <span class="chip chip-accent">Módulo 7</span>
+        <span class="mono-meta">Consultas estructuradas</span>
+        <span class="mono-meta">Julio 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap-narrow fade-up-2">
+
+    <div class="lab-section">
+      <div class="section-label">Qué practiqué</div>
+      <h2>Top-N: el patrón más útil del análisis</h2>
+      <p>«Los 10 más grandes», «los 5 mejor calificados», «los 3 que menos duermen». Casi toda
+      pregunta de negocio termina en un ranking recortado. En SQL eso es exactamente
+      <code class="inline">ORDER BY … LIMIT …</code>.</p>
+      <ul class="arrow-list">
+        <li><code class="inline">ORDER BY</code> ordena ascendente por defecto (menor primero).</li>
+        <li><code class="inline">DESC</code> invierte a descendente; <code class="inline">ASC</code> lo hace explícito.</li>
+        <li><code class="inline">LIMIT n</code> corta el resultado a las primeras <code class="inline">n</code> filas.</li>
+        <li>El orden de cláusulas es fijo: <code class="inline">WHERE</code> → <code class="inline">ORDER BY</code> → <code class="inline">LIMIT</code>.</li>
+      </ul>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Consultas</div>
+      <h2>Recorrido del laboratorio</h2>
+
+      <h3>Ordenar y recortar</h3>
+      <pre class="code"><span class="cm">-- las 3 lunas de mayor radio</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> moons <span class="kw">ORDER BY</span> radius <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="fn">3</span>;
+
+<span class="cm">-- los 10 países más grandes por área, y luego por población</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> countries <span class="kw">ORDER BY</span> area <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="fn">10</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> countries <span class="kw">ORDER BY</span> population <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="fn">10</span>;</pre>
+      <p>Las dos listas de países <strong>no coinciden</strong>: área y población miden cosas
+      distintas. Buen recordatorio de no confundir una métrica con otra.</p>
+
+      <h3>Filtrar antes de ordenar</h3>
+      <pre class="code"><span class="cm">-- los 4 animales que menos duermen (ascendente)</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> animals <span class="kw">ORDER BY</span> hours_sleep <span class="kw">LIMIT</span> <span class="fn">4</span>;
+
+<span class="cm">-- los 3 carnívoros que menos duermen</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> animals
+<span class="kw">WHERE</span> diet = <span class="fn">'carnivore'</span>
+<span class="kw">ORDER BY</span> hours_sleep <span class="kw">LIMIT</span> <span class="fn">3</span>;
+
+<span class="cm">-- las 3 lunas más grandes de Saturno</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> moons
+<span class="kw">WHERE</span> planet = <span class="fn">'Saturn'</span>
+<span class="kw">ORDER BY</span> radius <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="fn">3</span>;</pre>
+
+      <h3>Desafío: varias condiciones con AND</h3>
+      <pre class="code"><span class="cm">-- los 6 países más pequeños de Sudamérica con población &gt; 10 000</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> countries
+<span class="kw">WHERE</span> continent = <span class="fn">'South America'</span> <span class="kw">AND</span> population &gt; <span class="fn">10000</span>
+<span class="kw">ORDER BY</span> area <span class="kw">LIMIT</span> <span class="fn">6</span>;</pre>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Reflexión</div>
+      <h2>Lo que me llevo</h2>
+      <div class="reflection">
+        <div class="q-num">Nota</div>
+        <p class="question">¿Por qué SQL obliga a un orden fijo de cláusulas?</p>
+        <p class="answer">Porque refleja el orden lógico de la operación: primero se decide qué filas
+        entran (<code class="inline">WHERE</code>), después cómo se ordenan
+        (<code class="inline">ORDER BY</code>) y por último cuántas se muestran
+        (<code class="inline">LIMIT</code>). Escribirlo en otro orden es un error de sintaxis, no
+        solo de estilo.</p>
+      </div>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Fuente</div>
+      <h2>Material original</h2>
+      <p>Export del laboratorio tal como lo entregó la plataforma NetAcad:
+        <a style="color: var(--accent);" href="originales/ordenacion-y-limitacion.html">originales/ordenacion-y-limitacion.html</a>.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap-narrow">
+    <div class="article-footer">
+      <p>Laboratorio · Módulo 7 · Data Analytics Essentials</p>
+      <p><a href="../index.html">← Volver al curso</a></p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="mono-meta">© 2026 · Luis Steven Madriz Campos</p>
+    <div class="footer-links">
+      <a href="https://github.com/mochi00001" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/luismadriz13" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://medium.com/@luismadriz9" target="_blank" rel="noopener">Medium</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

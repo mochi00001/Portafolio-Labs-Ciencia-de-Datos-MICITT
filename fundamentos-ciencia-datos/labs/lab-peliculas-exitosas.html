@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Películas exitosas — Laboratorio | Data Analytics Essentials</title>
+<meta name="description" content="Writeup del laboratorio «Películas exitosas»: consultas sobre 50 años de películas — calificación, recaudación y rentabilidad. Preludio del capstone.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/portfolio.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="../../index.html" class="logo">datos<span>_</span>portafolio</a>
+    <a href="../index.html" class="back-link">← Data Analytics Essentials</a>
+  </div>
+</header>
+
+<main>
+  <section class="article-hero fade-up">
+    <div class="wrap">
+      <div class="breadcrumb">
+        <a href="../../index.html">Portafolio</a><span>/</span><a href="../index.html">Data Analytics Essentials</a><span>/</span><span>Laboratorio</span>
+      </div>
+      <h1>Películas exitosas</h1>
+      <p class="lede">Primer análisis real del dataset de películas que sostiene el proyecto final del curso: 50 años de estrenos con presupuesto, ingresos (en millones) y calificación promedio <code class="inline">ravg</code> de 0 a 10.</p>
+      <div class="article-meta">
+        <span class="chip chip-accent">Módulo 7</span>
+        <span class="mono-meta">Consultas estructuradas · dataset del capstone</span>
+        <span class="mono-meta">Julio 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap-narrow fade-up-2">
+
+    <div class="lab-section">
+      <div class="section-label">Contexto</div>
+      <h2>El dataset del capstone</h2>
+      <ul class="arrow-list">
+        <li>La tabla <code class="inline">movies</code> cubre unos 50 años de cine.</li>
+        <li><code class="inline">budget</code> e <code class="inline">revenue</code> están en <strong>millones de dólares</strong> (el <code class="inline">2790</code> de <em>Avatar</em> son 2 790 M = 2,79 mil millones).</li>
+        <li><code class="inline">ravg</code> es un promedio de varios sistemas de calificación, de 0 a 10.</li>
+      </ul>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Consultas</div>
+      <h2>Recorrido del laboratorio</h2>
+
+      <h3>Mejor y peor calificadas</h3>
+      <pre class="code"><span class="kw">SELECT</span> * <span class="kw">FROM</span> movies <span class="kw">ORDER BY</span> ravg <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="fn">5</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> movies <span class="kw">ORDER BY</span> ravg <span class="kw">ASC</span>  <span class="kw">LIMIT</span> <span class="fn">5</span>;</pre>
+      <p>Entre las 5 mejor calificadas dominan los títulos en inglés; entre las 5 peores, la
+      proporción cambia — una pista de sesgo en los sistemas de calificación según el mercado.</p>
+
+      <h3>Recaudación</h3>
+      <pre class="code"><span class="kw">SELECT</span> * <span class="kw">FROM</span> movies <span class="kw">ORDER BY</span> revenue <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="fn">5</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> movies <span class="kw">ORDER BY</span> revenue <span class="kw">ASC</span>  <span class="kw">LIMIT</span> <span class="fn">5</span>;</pre>
+      <p>Arriba, la clasificación <strong>PG-13</strong> se repite como la orientación de contenido
+      más taquillera.</p>
+
+      <h3>Películas que perdieron dinero</h3>
+      <pre class="code"><span class="kw">SELECT</span> * <span class="kw">FROM</span> movies <span class="kw">WHERE</span> revenue &lt; budget;
+
+<span class="cm">-- ...ordenadas por calificación, mejor primero</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> movies
+<span class="kw">WHERE</span> revenue &lt; budget
+<span class="kw">ORDER BY</span> ravg <span class="kw">DESC</span>;</pre>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Notas de laboratorio</div>
+      <h2>Hallazgo y siguiente paso</h2>
+      <div class="note-box">
+        <div class="label">Observación</div>
+        <p>Que una película pierda dinero en taquilla <strong>no</strong> implica que esté mal
+        calificada: varias de las que perdieron dinero tienen <code class="inline">ravg</code> alto.
+        Éxito comercial y éxito crítico son ejes independientes.</p>
+      </div>
+      <p><strong>Idea para el capstone:</strong> un análisis interesante sería medir el éxito de las
+      películas cruzando su <em>utilidad</em> (<code class="inline">revenue − budget</code>) con su
+      <em>puntuación</em>, segmentado por el <em>año</em> de estreno — para ver si la relación entre
+      rentabilidad y calidad percibida cambia con el tiempo.</p>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Continúa en</div>
+      <h2>Proyecto final del curso</h2>
+      <p>Este laboratorio es el punto de partida del capstone <em>Excel · SQL · Tableau</em> sobre el
+      dataset de películas. Estado actual: <span class="status status-plan">planificado</span> —
+      el archivo <code class="inline">datos/Movies_data_2000.xlsx</code> ya está en el repositorio.</p>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Fuente</div>
+      <h2>Material original</h2>
+      <p>Export del laboratorio tal como lo entregó la plataforma NetAcad:
+        <a style="color: var(--accent);" href="originales/peliculas-exitosas.html">originales/peliculas-exitosas.html</a>.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap-narrow">
+    <div class="article-footer">
+      <p>Laboratorio · Módulo 7 · Data Analytics Essentials</p>
+      <p><a href="../index.html">← Volver al curso</a></p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="mono-meta">© 2026 · Luis Steven Madriz Campos</p>
+    <div class="footer-links">
+      <a href="https://github.com/mochi00001" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/luismadriz13" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://medium.com/@luismadriz9" target="_blank" rel="noopener">Medium</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL en el mundo — Laboratorio | Data Analytics Essentials</title>
+<meta name="description" content="Writeup del laboratorio «SQL en el mundo»: primeros SELECT, el comodín * y la cláusula WHERE sobre tablas de países, formas y saludos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/portfolio.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="../../index.html" class="logo">datos<span>_</span>portafolio</a>
+    <a href="../index.html" class="back-link">← Data Analytics Essentials</a>
+  </div>
+</header>
+
+<main>
+  <section class="article-hero fade-up">
+    <div class="wrap">
+      <div class="breadcrumb">
+        <a href="../../index.html">Portafolio</a><span>/</span><a href="../index.html">Data Analytics Essentials</a><span>/</span><span>Laboratorio</span>
+      </div>
+      <h1>SQL en el mundo</h1>
+      <p class="lede">
+        Primer contacto con un editor SQL real. El objetivo del laboratorio es entender la estructura
+        básica de una consulta —<code class="inline">SELECT</code>, <code class="inline">FROM</code>,
+        <code class="inline">WHERE</code>— usando tres tablas de juguete: saludos en varios idiomas,
+        formas geométricas y países del mundo.
+      </p>
+      <div class="article-meta">
+        <span class="chip chip-accent">Módulo 6</span>
+        <span class="mono-meta">Bases de datos relacionales y SQL</span>
+        <span class="mono-meta">Julio 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap-narrow fade-up-2">
+
+    <div class="lab-section">
+      <div class="section-label">Qué practiqué</div>
+      <h2>De la hoja de cálculo a la consulta</h2>
+      <p>
+        En Excel se navega y se filtra a mano. En SQL se <em>describe</em> el resultado que se quiere
+        y el motor lo produce. Este laboratorio introduce las tres piezas mínimas: qué columnas
+        (<code class="inline">SELECT</code>), de qué tabla (<code class="inline">FROM</code>) y con
+        qué condición (<code class="inline">WHERE</code>).
+      </p>
+      <ul class="arrow-list">
+        <li>El comodín <code class="inline">*</code> significa «todas las columnas».</li>
+        <li>Los operadores son los matemáticos normales: <code class="inline">&lt;</code>, <code class="inline">&gt;</code>, <code class="inline">=</code>.</li>
+        <li><code class="inline">=</code> también compara texto: <code class="inline">color = 'red'</code> (comillas simples, y respetando mayúsculas del dato).</li>
+        <li>Los números van sin separadores: diez millones se escribe <code class="inline">10000000</code>.</li>
+        <li><code class="inline">AND</code> y <code class="inline">OR</code> combinan condiciones.</li>
+      </ul>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Consultas</div>
+      <h2>Recorrido del laboratorio</h2>
+
+      <h3>Seleccionar todo</h3>
+      <pre class="code"><span class="kw">SELECT</span> * <span class="kw">FROM</span> hello;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> shapes;</pre>
+      <p>La vista de imagen de la plataforma dibuja las formas seleccionadas — una forma visual de comprobar qué devolvió la consulta.</p>
+
+      <h3>Filtrar con WHERE</h3>
+      <pre class="code"><span class="cm">-- formas con exactamente 5 puntos</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> shapes <span class="kw">WHERE</span> dots = <span class="fn">5</span>;
+
+<span class="cm">-- formas con menos de 3 puntos</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> shapes <span class="kw">WHERE</span> dots &lt; <span class="fn">3</span>;
+
+<span class="cm">-- formas rojas / estrellas</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> shapes <span class="kw">WHERE</span> color = <span class="fn">'red'</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> shapes <span class="kw">WHERE</span> shape = <span class="fn">'star'</span>;</pre>
+
+      <h3>La tabla de países</h3>
+      <pre class="code"><span class="cm">-- países de Asia</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> countries <span class="kw">WHERE</span> continent = <span class="fn">'Asia'</span>;
+
+<span class="cm">-- países con población menor a 10 millones</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> countries <span class="kw">WHERE</span> population &lt; <span class="fn">10000000</span>;</pre>
+
+      <h3>Condiciones combinadas</h3>
+      <pre class="code"><span class="cm">-- círculo Y con 4 puntos</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> shapes <span class="kw">WHERE</span> shape = <span class="fn">'circle'</span> <span class="kw">AND</span> dots = <span class="fn">4</span>;
+
+<span class="cm">-- desafío: formas del lado derecho con menos de 5 puntos</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> shapes <span class="kw">WHERE</span> xloc &gt; <span class="fn">0</span> <span class="kw">AND</span> dots &lt; <span class="fn">5</span>;</pre>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Reflexión</div>
+      <h2>Lo que me llevo</h2>
+      <div class="reflection">
+        <div class="q-num">Nota</div>
+        <p class="question">¿Por qué empezar SQL con datos «de juguete» (formas, saludos)?</p>
+        <p class="answer">
+          Porque separa el aprendizaje de la sintaxis del ruido de un dataset real. Con la vista de
+          imagen de la plataforma, cada <code class="inline">WHERE</code> tiene un resultado visual
+          inmediato: se ve qué se seleccionó y qué no. La misma lógica (<code class="inline">SELECT …
+          FROM … WHERE …</code>) escala luego a las tablas de países y de películas del resto del curso.
+        </p>
+      </div>
+    </div>
+
+    <div class="lab-section">
+      <div class="section-label">Fuente</div>
+      <h2>Material original</h2>
+      <p>Export del laboratorio tal como lo entregó la plataforma NetAcad:
+        <a style="color: var(--accent);" href="originales/sql-en-el-mundo.html">originales/sql-en-el-mundo.html</a>.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="wrap-narrow">
+    <div class="article-footer">
+      <p>Laboratorio · Módulo 6 · Data Analytics Essentials</p>
+      <p><a href="../index.html">← Volver al curso</a></p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="mono-meta">© 2026 · Luis Steven Madriz Campos</p>
+    <div class="footer-links">
+      <a href="https://github.com/mochi00001" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/luismadriz13" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://medium.com/@luismadriz9" target="_blank" rel="noopener">Medium</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
